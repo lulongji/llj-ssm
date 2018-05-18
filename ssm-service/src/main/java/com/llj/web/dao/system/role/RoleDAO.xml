@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.haoys.web.dao.system.role.RoleDAO">
+<mapper namespace="com.llj.web.dao.system.role.RoleDAO">
 
 	<!-- 查询所有 -->
-	<select id="getRole" parameterType="RoleQuery" resultType="Role">
+	<select id="getRole" parameterType="RolePage" resultType="Role">
   		SELECT * FROM CMS_ROLE
   		<where>
 	 		<if test="null != roleName and '' != roleName">

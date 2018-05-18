@@ -49,7 +49,7 @@
   	</select>
   	
 	<!-- 查询所有 -->
-	 <select id="getUser" parameterType="UserQuery" resultType="User">
+	 <select id="getUser" parameterType="UserPage" resultType="User">
 		SELECT
 			A .*, B.ROLE_ID
 		FROM

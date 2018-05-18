@@ -18,7 +18,7 @@ public interface PermissionDAO {
 	/**
 	 * 根据用户获取角色，根绝角色获取选中的权限
 	 * 
-	 * @param user
+	 * @param permission
 	 * @return
 	 * @throws Exception
 	 */
