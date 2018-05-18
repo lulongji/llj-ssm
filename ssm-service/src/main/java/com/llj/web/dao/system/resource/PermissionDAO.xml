@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haoys.web.dao.system.resource.PermissionDAO">
+
+	<!-- 查询所有 -->
+	<select id="getMenuPermission" parameterType="User" resultType="String">
+		<if test="'admin'!= userName">
+            SELECT
+            permission_code
+            FROM
+            CMS_USER cu
+            LEFT JOIN CMS_USER_ROLE cur ON cu.ID = cur.USER_ID
+            LEFT JOIN CMS_ROLE_PERMISSION crp ON cur.role_id = crp.role_id
+            LEFT JOIN CMS_PERMISSION cp ON crp.permission_id = cp.ID
+            WHERE
+            cur. STATUS = 1
+            AND cu.USER_NAME =#{userName}
+            AND crp. STATUS = 1
+            AND cp.PERMISSION_STATUS = 1
+        </if>
+        <if test="'admin'== userName">
+            select permission_code from CMS_PERMISSION WHERE PERMISSION_STATUS = 1
+        </if>
+	</select>
+	
+	
+	<!-- 查询所有 -->
+	<select id="getPermissionSelect" parameterType="Permission" resultType="Permission">
+		SELECT
+			*
+		FROM
+			CMS_ROLE_PERMISSION crp
+		LEFT JOIN CMS_ROLE cr ON cr.ID = crp.ROLE_ID
+		WHERE
+			cr.ID  = #{roleId}
+	</select>
+	
+	<!--删除  -->
+	<delete id="delPermissions" parameterType="Permission">
+		<![CDATA[ 
+			DELETE
+			FROM
+				CMS_ROLE_PERMISSION
+			WHERE
+				ROLE_ID = #{roleId}
+		]]> 
+	</delete>
+	
+	<!-- 批量插入授权信息 -->
+	<select id="batchInsertPermissions"  parameterType="java.util.List">  
+			INSERT INTO CMS_ROLE_PERMISSION (
+				ID,
+				ROLE_ID,
+				PERMISSION_ID,
+				STATUS,
+				CREATE_TIME,
+				UPDATE_TIME
+			)
+			select seq_CMS_ROLE_PERMISSION.nextval,p.* from (
+	    <foreach collection="list" item="item" index="index" separator="union all" >
+
+			SELECT #{item.permission.roleId} roleId,#{item.role.permissionId} permissionId,
+			#{item.permission.status } status,SYSDATE
+			CREATE_TIME,SYSDATE UPDATE_TIME FROM DUAL
+	    </foreach>  
+	    )p
+	</select>  
+</mapper>

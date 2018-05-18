@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd 
+        http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd" >
+
+	<!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的ShiroDbRealm.java -->
+	<bean id="shiroRealm" class="com.llj.web.core.web.interceptor.shiro.ShiroRealm"></bean>
+
+     <!-- sessionManager管理器 ,采用shiro默认的缓存策略 -->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager" />
+
+    <!-- rememberMeManager管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cookie" ref="rememberMeCookie" />
+    </bean>
+
+    <!-- rememberMeCookie管理器 -->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe" />
+        <property name="maxAge" value="-1" />
+        <property name="httpOnly" value="true"/>
+    </bean>
+
+    <!-- securityManager管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="shiroRealm" />
+        <property name="cacheManager" ref="cacheManager" /> 
+         <property name="rememberMeManager" ref="rememberMeManager" /> 
+    </bean>
+
+	<!-- Shiro主过滤器本身功能十分强大,其强大之处就在于它支持任何基于URL路径表达式的、自定义的过滤器的执行 -->  
+    <!-- Web应用中,Shiro可控制的Web请求必须经过Shiro主过滤器的拦截,Shiro对基于Spring的Web应用提供了完美的支持 -->  
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- Shiro的核心安全接口,这个属性是必须的  -->
+		<property name="securityManager" ref="securityManager" />
+		<!--  要求登录时的链接(可根据项目的URL进行替换),非必须的属性,默认会自动寻找Web工程根目录下的"/login.jsp"页面  -->
+        <property name="loginUrl" value="/"/>  
+        <!--登录成功后要跳转的连接  -->
+     	<property name="successUrl" value="/login/main"/>
+<!--  	    <property name="filters">
+            <util:map>
+                <entry key="authc" value-ref="formAuthenticationFilter" />
+            </util:map>
+        </property> -->
+        <!--用户访问未对其授权的资源时,所显示的连接  -->
+        <property name="unauthorizedUrl" value="/"/>
+        
+        <property name="filterChainDefinitions">  
+           <value>  
+            	/login/login.do	 					= anon
+            	/res/** 							= anon
+            	/upload/** 							= anon
+            	/redis/**							= anon
+            	/**									= authc
+            </value>  
+        </property>
+	</bean>
+	 <!--   
+       开启Shiro的注解(如@RequiresRoles，@RequiresPermissions)，需借助SpringAOP扫描使用Shiro注解的类，  
+       并在必要时进行安全逻辑验证  
+    -->  
+  <!--     <bean  
+        class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"></bean>  
+    <bean  
+        class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">  
+        <property name="securityManager" ref="securityManager"></property>  
+    </bean>   --> 
+</beans>

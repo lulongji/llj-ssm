@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haoys.web.dao.system.dict.DictValueDao">
+    <!--查询-->
+    <select id="queryBycondtion" parameterType="MyDictQuery" resultType="DictValue">
+        SELECT ydv.*,YDC.CATEGORY_NAME , YDV2.NAME as parent_name
+        FROM DICT_VALUE ydv
+          LEFT JOIN DICT_VALUE ydv2 ON YDV.PARENT_ID = YDV2.ID
+          LEFT JOIN DICT_CATEGORY ydc ON YDV.CATEGORY_ID=YDC.ID
+        <where>
+            <if test="null != name and '' != name">
+                AND ydv.name like  '%'||#{name}||'%'
+            </if>
+            <if test="null != categoryId">
+                AND ydv.category_id = #{categoryId}
+            </if>
+            <if test="null != categoryCode and '' != categoryCode">
+                AND ydv.CATEGORY_CODE = #{categoryCode}
+            </if>
+            <if test="null != parentId">
+                AND ydv.parent_id = #{parentId}
+            </if>
+            <if test="null != mappingId and mappingId != ''">
+                AND ydv.mapping_id = #{mappingId}
+            </if>
+            <if test="null != createTime ">
+                AND ydv.create_time = #{createTime}
+            </if>
+            <if test="null != updateTime ">
+                AND ydv.update_time = #{updateTime}
+            </if>
+            <if test="null != status ">
+                AND ydv.status = #{status}
+            </if>
+        </where>
+        ORDER BY ydv.CREATE_TIME DESC
+    </select>
+
+    <!-- 查询List -->
+    <select id="findListBy" parameterType="DictValue" resultType="DictValue">
+        SELECT ydv.*,YDC.CATEGORY_NAME , YDV2.NAME as parent_name
+        FROM DICT_VALUE ydv
+        LEFT JOIN DICT_VALUE ydv2 ON YDV.PARENT_ID = YDV2.ID
+        LEFT JOIN DICT_CATEGORY ydc ON YDV.CATEGORY_ID=YDC.ID
+        <where>
+            <if test="null != id">
+                AND ydv.id = #{id}
+            </if>
+            <if test="null != name and '' != name">
+                AND ydv.name like  '%'||#{name}||'%'
+            </if>
+            <if test="null != categoryId">
+                AND ydv.category_id = #{categoryId}
+            </if>
+            <if test="null != categoryCode and '' != categoryCode">
+                AND ydv.CATEGORY_CODE = #{categoryCode}
+            </if>
+            <if test="null != parentId">
+                AND ydv.parent_id = #{parentId}
+            </if>
+            <if test="null != mappingId and mappingId != ''">
+                AND ydv.mapping_id = #{mappingId}
+            </if>
+            <if test="null != mappingParentId and mappingParentId != ''">
+                AND ydv.MAPPING_PARENT_ID = #{mappingParentId}
+            </if>
+            <if test="null != createTime ">
+                AND ydv.create_time = #{createTime}
+            </if>
+            <if test="null != updateTime ">
+                AND ydv.update_time = #{updateTime}
+            </if>
+            <if test="null != status ">
+                AND ydv.status = #{status}
+            </if>
+            <if test="null != dictLevel ">
+                AND ydv.dictlevel = #{dictLevel}
+            </if>
+        </where>
+
+    </select>
+
+    <!--新增-->
+    <insert id="save" parameterType="DictValue">
+        <![CDATA[
+        INSERT INTO dict_value(
+          id,  name,  category_id, CATEGORY_CODE, parent_id, create_time,  update_time, status,DICTLEVEL,DICT_CODE,DICT_CONTENT
+        )
+        VALUES (
+          SEQ_DICT_VALUE.NEXTVAL,#{name},#{categoryId},#{categoryCode},#{parentId}, #{createTime},#{updateTime},#{status},#{dictLevel},#{dictCode},#{dictContent}
+
+        )
+        ]]>
+    </insert>
+    <!--更新-->
+    <update id="updateDynamic" parameterType="DictValue">
+        UPDATE dict_value
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name!=''">name = #{name}, </if>
+            <if test="categoryId!=null">category_id = #{categoryId}, </if>
+            <if test="null != categoryCode and '' != categoryCode">
+                CATEGORY_CODE = #{categoryCode},
+            </if>
+            <if test="parentId!=null">parent_id = #{parentId}, </if>
+            <if test="mappingId!=null and mappingId!=''">mapping_id = #{mappingId}, </if>
+            <if test="createTime!=null">create_time = #{createTime}, </if>
+            <if test="updateTime!=null">update_time = #{updateTime}, </if>
+            <if test="status!=null">status = #{status}, </if>
+            <if test="null != dictCode and '' != dictCode">
+                DICT_CODE = #{dictCode},
+            </if>
+            <if test="null != dictContent and '' != dictContent">
+                DICT_CONTENT = #{dictContent},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+    <!-- 节点层级查询查询,查询所有上级 -->
+    <select id="getDictLevPre" parameterType="Integer" resultType="Integer">
+      SELECT id FROM DICT_VALUE START WITH ID = #{id} CONNECT BY PRIOR PARENT_ID = ID ;
+    </select>
+    <!--节点层级查询，查询所有子级-->
+    <select id="getDictLevNext" parameterType="Integer" resultType="Integer">
+      SELECT id FROM DICT_VALUE START WITH ID = #{id} CONNECT BY PARENT_ID = PRIOR ID
+    </select>
+    <!--批量通过ID删除-->
+    <delete id="removeDictByIds" parameterType="list" >
+      DELETE FROM DICT_VALUE
+        <where>
+            ID IN
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>

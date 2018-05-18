@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haoys.web.dao.system.dict.DictCategoryDao">
+    <!--查询-->
+    <select id="queryBycondtion" parameterType="MyCategoryQuery" resultType="DictCategory">
+        SELECT * FROM dict_category
+        <where>
+            <if test="null != id">
+                AND id = #{id}
+            </if>
+            <if test="null != categoryName and '' != categoryName">
+                AND category_name like  '%'||#{categoryName}||'%'
+            </if>
+            <if test="null != categoryCode and '' != categoryCode">
+                AND CATEGORY_CODE like  #{categoryCode}||'%'
+            </if>
+        </where>
+        ORDER by create_time ASC
+    </select>
+
+    <!--查询不分页-->
+    <select id="findListBy" parameterType="DictCategory" resultType="DictCategory">
+        SELECT * FROM dict_category
+        <where>
+            <if test="null != id">
+                AND id = #{id}
+            </if>
+            <if test="null != categoryName and '' != categoryName">
+                AND category_name like  '%'||#{categoryName}||'%'
+            </if>
+            <if test="null != categoryCode and '' != categoryCode">
+                AND CATEGORY_CODE = #{categoryCode}
+            </if>
+        </where>
+        ORDER by create_time ASC
+    </select>
+
+    <!-- 校验 -->
+    <select id="checkCategory" parameterType="DictCategory" resultType="DictCategory">
+        SELECT * FROM dict_category
+        <where>
+            <if test="null != id">
+                AND id = #{id}
+            </if>
+            <if test="null != categoryCode and '' != categoryCode">
+                AND CATEGORY_CODE = #{categoryCode}
+            </if>
+        </where>
+    </select>
+
+    <!--新增-->
+    <insert id="save" parameterType="DictCategory">
+        INSERT INTO dict_category(
+          id,category_name,CATEGORY_CODE,create_time,update_time
+        )
+        VALUES (
+          SEQ_DICT_CATEGORY.NEXTVAL,#{categoryName},#{categoryCode},#{createTime},#{updateTime}
+        )
+    </insert>
+    <!--更新-->
+    <update id="updateDynamic" parameterType="DictCategory">
+        UPDATE dict_category
+        <trim prefix="set" suffixOverrides=",">
+            <if test="categoryName!=null and categoryName!=''">category_name = #{categoryName}, </if>
+            <if test="categoryCode!=null and categoryCode!=''">CATEGORY_CODE = #{categoryCode}, </if>
+            <if test="createTime!=null">create_time = #{createTime}, </if>
+            <if test="updateTime!=null">update_time = #{updateTime}, </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <!--删除-->
+    <delete id="deleteCategory" parameterType="Integer">
+      DELETE FROM DICT_CATEGORY WHERE  id = #{id}
+    </delete>
+
+</mapper>

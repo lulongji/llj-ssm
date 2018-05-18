@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haoys.web.dao.system.resource.MenuDAO">
+
+	<!-- 查询所有-->
+	<select id="getMenuAll" resultType="ZtreeNodes">
+		SELECT
+			ID,
+			PARENT_ID AS pId,
+			PERMISSION_NAME AS NAME
+		FROM
+			CMS_PERMISSION
+		ORDER BY SORT_NUM 
+	</select>
+	<!-- 查询所有-->
+	<select id="getMenuTreeAll" resultType="Menu">
+		SELECT
+			*
+		FROM
+			CMS_PERMISSION
+		<where>
+			<if test="null != resourcesType and '' != resourcesType">
+					RESOURCES_TYPE != #{resourcesType}
+			</if>
+		</where>	
+		ORDER BY SORT_NUM 
+	</select>
+	
+	<!-- 查询所有一级菜单 -->
+	<select id="getMenu" parameterType="Menu" resultType="Menu">
+		SELECT * from "CMS_PERMISSION"
+		WHERE PARENT_ID = 0
+		ORDER BY SORT_NUM 
+	</select>
+
+	<!-- 查询所有当前菜单的所有子菜单 -->
+	<select id="getMenuTree" parameterType="Menu" resultType="Menu">
+		SELECT * from "CMS_PERMISSION"
+		WHERE PARENT_ID = #{parentId}
+		ORDER BY SORT_NUM 
+	</select>
+	
+	<!-- 查询不包含子集的菜单名称 -->
+	<select id="getMenuName" parameterType="Menu" resultType="Menu">
+	SELECT
+		*
+	FROM
+	(	SELECT
+			*
+		FROM
+			CMS_PERMISSION A
+		WHERE
+			A . ID IN (
+				SELECT
+					E . ID
+				FROM
+					CMS_PERMISSION E
+				MINUS
+					SELECT
+						D .IDs
+					FROM
+						(
+							SELECT
+								b.ids
+							FROM
+								(
+									SELECT
+										c. ID IDs
+									FROM
+										CMS_PERMISSION c START WITH "ID" = #{id} CONNECT BY PRIOR "ID" = PARENT_ID
+								) b
+						
+						) D where IDs !=#{id}
+			)
+	) where RESOURCES_TYPE != #{resourcesType}
+	</select>
+	
+	<!-- 查询所有菜单名称 -->
+	<select id="getMenuNameAll" parameterType="Menu" resultType="Menu">
+		SELECT
+			ID,
+			PERMISSION_NAME
+		FROM
+			CMS_PERMISSION
+		<where>
+			<if test="null != resourcesType and '' != resourcesType">
+					RESOURCES_TYPE != #{resourcesType}
+			</if>
+		</where>	
+	</select>
+	
+	<!-- 增加 -->
+	<insert id="addMenu" parameterType="Menu">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			SELECT seq_CMS_PERMISSION.nextval as ID from DUAL
+		</selectKey>
+		INSERT INTO CMS_PERMISSION (
+			ID,
+			PERMISSION_NAME,
+			URL,
+			PERMISSION_STATUS,
+			PARENT_ID,
+			RESOURCES_TYPE,
+			PERMISSION_CODE,
+			SORT_NUM,
+			CREATE_TIME,
+			UPDATE_TIME
+		)
+		VALUES
+			(
+				#{id}, 
+				#{permissionName},
+				#{url},
+				#{permissionStatus},
+				#{parentId},
+				#{resourcesType},
+				#{permissionCode},
+				#{sortNum},
+				SYSDATE,
+				SYSDATE
+			)
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateMenu" parameterType="Menu">
+		UPDATE CMS_PERMISSION SET 
+			<if test="null != permissionName and '' != permissionName">
+				PERMISSION_NAME = #{permissionName},
+			</if>
+			<if test="null != url and '' != url">
+				URL = #{url},
+			</if>
+			<if test="null != resourcesType and '' != resourcesType">
+				RESOURCES_TYPE = #{resourcesType},
+			</if>
+			<if test="null != parentId and '' != parentId">
+				PARENT_ID = #{parentId},
+			</if>
+			<if test="null != permissionCode and '' != permissionCode">
+				PERMISSION_CODE = #{permissionCode},
+			</if>
+			<if test="null != permissionCode and '' != permissionCode">
+				SORT_NUM = #{sortNum},
+			</if>
+				UPDATE_TIME = SYSDATE
+			WHERE ID = #{id}
+	</update>
+	
+	<!--删除  -->
+	<delete id="deleteMenu" parameterType="Menu">
+	DELETE
+	FROM
+	CMS_PERMISSION
+	WHERE
+	ID IN (
+	SELECT
+	temp.IDS
+	FROM
+	(
+	SELECT
+	"ID" IDs
+	FROM
+	CMS_PERMISSION START WITH "ID" = #{id} CONNECT BY PRIOR "ID" =
+	PARENT_ID
+	) temp
+	)
+	</delete>
+	
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.llj.web.dao.system.user.UserDAO">
+	<!-- 增加 -->
+	<insert id="insertUser" parameterType="User">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			SELECT seq_CMS_USER.nextval as ID from DUAL
+		</selectKey>
+		INSERT INTO CMS_USER (
+			ID,
+			USER_NAME,
+			PASSWORD,
+			CREATE_TIME,
+			UPDATE_TIME
+		)
+		VALUES
+			(
+				#{id}, 
+				#{userName},
+				#{password},
+				SYSDATE,
+				SYSDATE
+			)
+	</insert>
+	
+	<!--删除  -->
+	<delete id="deleteUser" parameterType="User">
+		DELETE FROM CMS_USER WHERE USER_NAME = #{userName}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="updateUser" parameterType="User">
+		UPDATE CMS_USER SET 
+			<if test="null != password">
+				PASSWORD = #{password},
+			</if>
+				UPDATE_TIME = SYSDATE
+			WHERE USER_NAME = #{userName}
+	</update>
+	
+	<!-- 查询单个 登陆比对用户名密码-->
+	 <select id="queryUser" parameterType="User" resultType="User">
+  		SELECT * FROM CMS_USER WHERE USER_NAME = #{userName} and PASSWORD = #{password}
+  	</select>
+  	
+	<!-- 查询单个 用户名查询-->
+	 <select id="queryUserInfo" parameterType="User" resultType="User">
+  		SELECT * FROM CMS_USER WHERE USER_NAME = #{userName} 
+  	</select>
+  	
+	<!-- 查询所有 -->
+	 <select id="getUser" parameterType="UserQuery" resultType="User">
+		SELECT
+			A .*, B.ROLE_ID
+		FROM
+			CMS_USER A
+		LEFT JOIN CMS_USER_ROLE B ON A . ID = b.USER_ID
+  		<where>
+	 		<if test="null != userName and '' != userName">
+	             A.USER_NAME = #{userName} 
+	        </if>
+	    </where>
+	    ORDER BY A.UPDATE_TIME DESC
+  	</select>
+  	<!-- 修改时间 -->
+	<update id="updateTime" parameterType="User">
+		UPDATE CMS_USER SET  UPDATE_TIME = SYSDATE
+			WHERE  USER_NAME = #{userName}
+	</update>
+</mapper>

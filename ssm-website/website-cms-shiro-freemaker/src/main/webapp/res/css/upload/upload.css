@@ -1,0 +1,50 @@
+.pic_warp {
+	overflow: hidden
+}
+
+.huo_pic {
+	width: 472px;
+	height: 280px;
+	float: left;
+	background: url(up_pic.jpg) no-repeat
+}
+
+.huo_pic img {
+	width: 100%;
+	border: 2px solid #e5e5e5
+}
+
+.pic_text {
+	width: 450px;
+	float: left;
+	margin: 0 0 0 56px
+}
+
+.pic_btn {
+	height: 45px;
+	line-height: 45px;
+	vertical-align: middle
+}
+
+.pic_btn a {
+	float: left;
+	color: #00ab73
+}
+
+.btn_bg {
+	display: inline-block;
+	width: 190px;
+	height: 45px;
+	background: url(upup.png) no-repeat;
+	margin-right: 20px
+}
+
+.btn_bg:hover {
+	opacity: .8
+}
+
+.pic_text p {
+	color: #a0a0a0;
+	line-height: 25px;
+	margin-top: 40px
+}
