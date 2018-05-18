@@ -46,7 +46,7 @@
 
 	<!-- redis操作工具类 -->
 	<bean
-		class="com.llj.framework.utils.cache.redis.springTemplate.RedisTemplateUtil">
+		class="com.llj.framework.cache.redis.springTemplate.RedisTemplateUtil">
 		<property name="redisTemplate" ref="redisTemplate" />
 	</bean>
 </beans>
