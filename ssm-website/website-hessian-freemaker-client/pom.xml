@@ -5,15 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.llj.web</groupId>
-		<artifactId>llj-ssm</artifactId>
+		<artifactId>ssm-website</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>ssm-service</artifactId>
-	<name>ssm-service</name>
+	<artifactId>website-hessian-freemaker-client</artifactId>
+	<packaging>war</packaging>
+	<name>website-hessian-freemaker-client Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -21,16 +19,8 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>com.llj.web</groupId>
-			<artifactId>ssm-entity</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.llj.web</groupId>
-			<artifactId>ssm-api</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
+	<build>
+		<finalName>hessian-client</finalName>
+	</build>
 </project>

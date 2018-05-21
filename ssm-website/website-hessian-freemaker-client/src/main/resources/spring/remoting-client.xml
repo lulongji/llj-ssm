@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <!--远程对象代理工厂-->
+    <bean id="demoTestServiceImpl" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="connectTimeout" value="60000"/>
+        <property name="serviceUrl" value="http://localhost:8080/hessian-server/remote/demotest"/>
+        <property name="serviceInterface" value="com.llj.web.api.demo.DemoTestService"/>
+        <!--新增overloadEnabled属性，并把它的值设置为true，默认是false，则Hessian就能支持方法的重载了。-->
+        <property name="overloadEnabled" value="false"/>
+    </bean>
+
+</beans>
