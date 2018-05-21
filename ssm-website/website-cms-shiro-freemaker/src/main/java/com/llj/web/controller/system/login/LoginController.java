@@ -122,7 +122,7 @@ public class LoginController {
             errInfo = "用户名或者密码为空！";
             result = JsonResult.failure();
         }
-		result.setJsonResult(errInfo);
+        result.setResult(errInfo);
         return result;
     }
 

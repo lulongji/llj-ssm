@@ -98,7 +98,7 @@ public class DictController {
             List<DictValue> valueList = dictService.getDictValue(dictValue);
             if (valueList != null && valueList.size() > 0) {
                 JsonResult result = JsonResult.success();
-                result.setJsonResult(JSONObject.toJSON(valueList));
+                result.setResult(JSONObject.toJSON(valueList));
                 return result;
             }
         } catch (Exception e) {
@@ -233,7 +233,7 @@ public class DictController {
             List<DictCategory> list = dictService.queryListCategory(dictCategory);
             if (null != list && list.size() > 0) {
                 JsonResult result = JsonResult.success();
-                result.setJsonResult(list.get(0));
+                result.setResult(list.get(0));
                 return result;
             }
         } catch (Exception ex) {
@@ -357,7 +357,7 @@ public class DictController {
             List<DictValue> dictValues = dictService.getDictValue(dictValue);
             if (null != dictValues && dictValues.size() > 0) {
                 JsonResult result = JsonResult.success();
-                result.setJsonResult(dictValues);
+                result.setResult(dictValues);
                 return result;
             }
         } catch (Exception e) {
@@ -386,7 +386,7 @@ public class DictController {
             List<DictValue> dictValues = dictService.getDictValue(dictValue);
             if (null != dictValues && dictValues.size() > 0) {
                 JsonResult result = JsonResult.success();
-                result.setJsonResult(dictValues);
+                result.setResult(dictValues);
                 return result;
             }
         } catch (Exception e) {

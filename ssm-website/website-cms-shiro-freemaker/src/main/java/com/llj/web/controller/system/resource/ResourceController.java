@@ -94,7 +94,7 @@ public class ResourceController {
                     }
                 }
             }
-            result.setJsonResult(ztreeNodesList);
+            result.setResult(ztreeNodesList);
         } catch (Exception e) {
             logger.info("系统-查询所有菜单权限节点异常！");
             result = JsonResult.failure();
@@ -119,7 +119,7 @@ public class ResourceController {
             Menu menu = new Menu();
             menu.setParentId(id);
             List<Menu> menuList = menuService.getMenuTree(menu);
-            result.setJsonResult(menuList);
+            result.setResult(menuList);
         } catch (Exception e) {
             result = JsonResult.failure();
             logger.error(e.toString(), e);
