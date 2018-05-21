@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : test-正式
+ Source Server         : test
  Source Server Type    : Oracle
  Source Server Version : 112040
- Source Host           : 47.93.217.247
+ Source Host           :  test
  Source Schema         : TEST
 
  Target Server Type    : Oracle
